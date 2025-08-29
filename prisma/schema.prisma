@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // or "mysql" or "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String   @id @default(uuid())
+  name                String?
+  userName            String   @unique
+  email               String   @unique
+  password            String
+  mobile              String
+  countryCode         String
+  countryId           String
+  stateId             String
+  cityId              String
+  type                String?
+  verify              Boolean? @default(false)
+  fcmToken            String?
+ 
+  status              Boolean? @default(true)
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+  createdBy           String?   
+  updatedBy           String? 
+
+  country               Country?   @relation("UserToCountry", fields: [countryId], references: [id]) 
+  state                 State?     @relation("UserToState", fields: [stateId], references: [id])
+  city                  City?      @relation("UserToCity", fields: [cityId], references: [id])
+
+  otp                   String?    
+  otpCount              Int        @default(0) 
+  otpCreatedAt          DateTime?  
+  otpExpiresAt          DateTime? 
+  otpVerifiedAt         DateTime?  
+} 
+
+model Country {
+  id                    String   @id @default(uuid())
+  name                  String   @unique
+  status                Boolean  @default(true)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  createdBy             String?
+  updatedBy             String?
+
+  states                State[]
+  users                 User[]   @relation("UserToCountry")
+
+}
+
+model State {
+  id                    String   @id @default(uuid())
+  name                  String
+  country               Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  countryId             String
+
+  status                Boolean  @default(true)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  createdBy             String?
+  updatedBy             String?
+
+  cities                City[]
+  users                 User[]   @relation("UserToState")
+
+}
+
+model City {
+  id                    String   @id @default(uuid())
+  name                  String
+  state                 State    @relation(fields: [stateId], references: [id])
+  stateId               String
+
+  status                Boolean  @default(true)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  createdBy             String?
+  updatedBy             String?
+
+  users                 User[]   @relation("UserToCity") 
+
+}
+
+
+model Make {
+  id                    String   @id @default(uuid())
+  image                 String
+  name                  String
+  status                Boolean? @default(true)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  createdBy             String?
+  updatedBy             String?
+}
+
+
+

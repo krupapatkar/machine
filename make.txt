@@ -1,0 +1,16 @@
+{
+  "image": "https://example.com/logo.png",
+  "name": "Tata Motors"
+  
+}
+------------------------------------------------------------------
+
+https://chatgpt.com/c/6874a5cb-ce0c-800e-a412-7b766c40e0c1
+
+-------------------------------------------------------------------
+
+src\routes\index.ts
+
+import makeRoutes from "./makeRoutes";
+
+router.use("/make", makeRoutes);
